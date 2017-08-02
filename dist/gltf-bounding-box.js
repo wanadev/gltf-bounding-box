@@ -169,6 +169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	exports.default = gltfBoundingBox;
+	module.exports = exports['default'];
 
 /***/ },
 /* 1 */
