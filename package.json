@@ -15,9 +15,15 @@
     "type": "git",
     "url": "https://github.com/wanadev/gltf-bounding-box.git"
   },
-  "keywords": [],
-  "author": "Valentin Ledrapier <vledrapier@wanadev.fr>",
-  "license": "MIT",
+  "keywords": [
+    "gltf",
+    "gltf2",
+    "boudings",
+    "3d",
+    "models"
+  ],
+  "author": "Wanadev <http://www.wanadev.fr/>",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/wanadev/gltf-bounding-box/issues"
   },
