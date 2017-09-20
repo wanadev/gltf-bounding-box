@@ -1,5 +1,5 @@
 import { Matrix } from 'matrixmath';
-import { flattenDeep } from 'lodash';
+import { flattenDeep, includes } from 'lodash';
 
 const gltfBoundingBox = {
 
@@ -84,7 +84,7 @@ const gltfBoundingBox = {
     const parentNodeName = Object.keys(nodes)
       .find(
         nodeName => nodes[nodeName].children &&
-        nodes[nodeName].children.includes(childNodeName)
+        includes(nodes[nodeName].children, childNodeName)
       );
 
     return parentNodeName ?
