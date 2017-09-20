@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import { Matrix } from 'matrixmath';
 import { flattenDeep } from 'lodash';
 

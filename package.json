@@ -61,7 +61,6 @@
     "mainVarName": "gltfBoundingBox"
   },
   "dependencies": {
-    "babel-polyfill": "^6.13.0",
     "lodash": "^4.17.4",
     "matrixmath": "^2.2.2"
   }
