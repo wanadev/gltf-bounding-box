@@ -150,7 +150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    // Find the node which has the given node as a child
 	    var parentNodeName = Object.keys(nodes).find(function (nodeName) {
-	      return nodes[nodeName].children && nodes[nodeName].children.includes(childNodeName);
+	      return nodes[nodeName].children && (0, _lodash.includes)(nodes[nodeName].children, childNodeName);
 	    });
 	
 	    return parentNodeName ?
