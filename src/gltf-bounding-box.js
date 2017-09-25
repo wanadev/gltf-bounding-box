@@ -1,44 +1,21 @@
 import { Matrix } from 'matrixmath';
 import { flattenDeep, includes } from 'lodash';
+import { loadPositions } from './gltf-reader';
 
 const gltfBoundingBox = {
 
   computeBoundings(gltf) {
-    const meshesTransformMatrices = this.getMeshesTransformMatrices(gltf.nodes);
+    gltf.loadedBuffers = {};
 
-    // Loop over each mesh of the model to get the position accessors of each of
-    // its primitives
-    const boundings = flattenDeep(
-      Object.keys(gltf.meshes).map(
-        meshName => gltf.meshes[meshName].primitives.map(
-          primitive =>
-
-            // Get the points from the bounding box of each position accessor
-            this.getPointsFromBoundings(
-              gltf.accessors[primitive.attributes.POSITION].min,
-              gltf.accessors[primitive.attributes.POSITION].max
-            )
-
-            // Multiply by the transform matrix of the mesh
-            .map(point => Matrix.multiply(point, meshesTransformMatrices[meshName]))
-        )
-      )
-    ).reduce((boundings, point) => {
-      boundings.min[0] = Math.min(boundings.min[0], point[0]);
-      boundings.min[1] = Math.min(boundings.min[1], point[1]);
-      boundings.min[2] = Math.min(boundings.min[2], point[2]);
-      boundings.max[0] = Math.max(boundings.max[0], point[0]);
-      boundings.max[1] = Math.max(boundings.max[1], point[1]);
-      boundings.max[2] = Math.max(boundings.max[2], point[2]);
-
-      return boundings;
-    }, {
-      min: [Infinity, Infinity, Infinity],
-      max: [-Infinity, -Infinity, -Infinity],
-    })
+    // get all the points and retrieve min max
+    const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf).reduce((acc, point) => {
+        acc.min = acc.min.map((elt, i) => elt < point[i] ? elt : point[i]);
+        acc.max = acc.max.map((elt, i) => elt > point[i] ? elt : point[i]);
+        return acc;
+    },{min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity]});
 
     // Return the dimensions of the bounding box
-    return {
+    const res =  {
       dimensions: {
         width: Math.round(boundings.max[0] - boundings.min[0]),
         depth: Math.round(boundings.max[2] - boundings.min[2]),
@@ -50,9 +27,11 @@ const gltfBoundingBox = {
         z: Math.round((boundings.max[1] + boundings.min[1]) / 2),
       },
     };
+
+    return res;
   },
 
-  getMeshesTransformMatrices(nodes) {
+  getMeshesTransformMatrices(nodes, gltf) {
     return Object.keys(nodes)
 
       // Get every node which have meshes
@@ -65,17 +44,22 @@ const gltfBoundingBox = {
           .map(mesh => ({ mesh, nodeName }))
       ], [])
 
-      .reduce((tree, { mesh, nodeName }) => {
+      .reduce((acc, { mesh, nodeName }) => {
 
         // Climb up the tree to retrieve all the transform matrices
         const matrices = this.getParentNodesMatrices(nodeName, nodes)
           .map(transformMatrix => new Matrix(4, 4, false).setData(transformMatrix));
 
         // Compute the global transform matrix
-        tree[mesh] = Matrix.multiply(...matrices);
+        const matrix = Matrix.multiply(...matrices);
+        const positions = this.getPointsFromArray(loadPositions(gltf, mesh));
 
-        return tree;
-      }, {})
+
+        const transformedPoints = positions.map(point =>  Matrix.multiply(point, matrix));
+        acc.push(...transformedPoints);
+
+        return acc;
+    }, []);
   },
 
   getParentNodesMatrices(childNodeName, nodes) {
@@ -99,34 +83,15 @@ const gltfBoundingBox = {
       [nodes[childNodeName].matrix] || [];
   },
 
-  getPointsFromBoundings(min, max) {
-    return [
-      new Matrix(1, 4, false).setData([
-        min[0], min[1], min[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        min[0], min[1], max[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        min[0], max[1], min[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        min[0], max[1], max[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        max[0], min[1], min[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        max[0], min[1], max[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        max[0], max[1], min[2], 1,
-      ]),
-      new Matrix(1, 4, false).setData([
-        max[0], max[1], max[2], 1,
-      ]),
-    ]
+  getPointsFromArray(array) {
+    const res = [];
+    for(let i = 0; i< array.length ; i+=3) {
+
+        res.push(new Matrix(1,4,false).setData([array[i], array[i+1], array[i+2], 1]));
+    }
+    return res;
   },
+
 };
 
 export default gltfBoundingBox;
