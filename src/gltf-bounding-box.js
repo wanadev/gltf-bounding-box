@@ -71,16 +71,19 @@ const gltfBoundingBox = {
         includes(nodes[nodeName].children, childNodeName)
       );
 
+    // Specify identity matrix if not present
+    const nodeMatrix = node[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
     return parentNodeName ?
 
       // If found, return the current matrix and continue climbing
       [
-        nodes[childNodeName].matrix,
+        nodeMatrix,
         ...this.getParentNodesMatrices(parentNodeName, nodes),
       ].filter(matrix => matrix) :
 
       // If not, only return the current matrix (if any)
-      [nodes[childNodeName].matrix] || [];
+      [nodeMatrix] || [];
   },
 
   getPointsFromArray(array) {
