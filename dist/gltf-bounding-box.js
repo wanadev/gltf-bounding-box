@@ -195,7 +195,7 @@ var gltfBoundingBox = {
     });
 
     // Specify identity matrix if not present
-    var nodeMatrix = node[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    var nodeMatrix = nodes[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
     return parentNodeName ?
 

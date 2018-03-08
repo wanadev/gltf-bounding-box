@@ -72,7 +72,7 @@ const gltfBoundingBox = {
       );
 
     // Specify identity matrix if not present
-    const nodeMatrix = node[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    const nodeMatrix = nodes[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
     return parentNodeName ?
 
