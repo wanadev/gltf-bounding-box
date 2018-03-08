@@ -83,7 +83,7 @@ const gltfBoundingBox = {
       ].filter(matrix => matrix) :
 
       // If not, only return the current matrix (if any)
-      [nodeMatrix] || [];
+      [nodeMatrix];
   },
 
   getPointsFromArray(array) {
