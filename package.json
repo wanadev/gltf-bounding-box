@@ -2,7 +2,7 @@
   "name": "gltf-bounding-box",
   "version": "0.1.8",
   "description": "Computes the global bounding box of a gltf model",
-  "main": "dist/gltf-bounding-box.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "gulp",
     "lint": "gulp lint",
@@ -57,7 +57,7 @@
     "webpack-stream": "4.0.0"
   },
   "babelBoilerplateOptions": {
-    "entryFileName": "gltf-bounding-box.js",
+    "entryFileName": "index.js",
     "mainVarName": "gltfBoundingBox"
   },
   "dependencies": {

@@ -2,13 +2,10 @@ import { Matrix } from 'matrixmath';
 import { flattenDeep, includes } from 'lodash';
 import { loadPositions } from './gltf-reader';
 
-const gltfBoundingBox = {
+const gltf2BoundingBox = {
 
-  computeBoundings(gltf) {
-    gltf.loadedBuffers = {};
-
-    // get all the points and retrieve min max
-    const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf).reduce((acc, point) => {
+  computeBoundings(gltf, buffers=[]) {
+    const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf, buffers).reduce((acc, point) => {
         acc.min = acc.min.map((elt, i) => elt < point[i] ? elt : point[i]);
         acc.max = acc.max.map((elt, i) => elt > point[i] ? elt : point[i]);
         return acc;
@@ -31,29 +28,22 @@ const gltfBoundingBox = {
     return res;
   },
 
-  getMeshesTransformMatrices(nodes, gltf) {
-    return Object.keys(nodes)
+  getMeshesTransformMatrices(nodes, gltf, buffers) {
+    nodes.forEach((node, index) => node.index = index);
+
+    return nodes
 
       // Get every node which have meshes
-      .filter(nodeName => nodes[nodeName].meshes)
+      .filter(node => (node.mesh !== undefined))
 
-      // Get a list of every mesh with a reference to its parent node name
-      .reduce((meshes, nodeName) => [
-        ...meshes,
-        ...nodes[nodeName].meshes
-          .map(mesh => ({ mesh, nodeName }))
-      ], [])
-
-      .reduce((acc, { mesh, nodeName }) => {
-
+      .reduce((acc, node) => {
         // Climb up the tree to retrieve all the transform matrices
-        const matrices = this.getParentNodesMatrices(nodeName, nodes)
+        const matrices = this.getParentNodesMatrices(node, nodes)
           .map(transformMatrix => new Matrix(4, 4, false).setData(transformMatrix));
 
         // Compute the global transform matrix
         const matrix = Matrix.multiply(...matrices);
-        const positions = this.getPointsFromArray(loadPositions(gltf, mesh));
-
+        const positions = this.getPointsFromArray(loadPositions(gltf, node.mesh, buffers));
 
         const transformedPoints = positions.map(point =>  Matrix.multiply(point, matrix));
         acc.push(...transformedPoints);
@@ -62,34 +52,32 @@ const gltfBoundingBox = {
     }, []);
   },
 
-  getParentNodesMatrices(childNodeName, nodes) {
-
+  getParentNodesMatrices(childNode, nodes) {
     // Find the node which has the given node as a child
-    const parentNodeName = Object.keys(nodes)
+    const parentNode = nodes
       .find(
-        nodeName => nodes[nodeName].children &&
-        includes(nodes[nodeName].children, childNodeName)
+        node => node.children &&
+        includes(node.children, childNode.index)
       );
 
     // Specify identity matrix if not present
-    const nodeMatrix = nodes[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    const childNodeMatrix = childNode.matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-    return parentNodeName ?
+    return (parentNode !== undefined) ?
 
       // If found, return the current matrix and continue climbing
       [
-        nodeMatrix,
-        ...this.getParentNodesMatrices(parentNodeName, nodes),
+        childNodeMatrix,
+        ...this.getParentNodesMatrices(parentNode, nodes),
       ].filter(matrix => matrix) :
 
       // If not, only return the current matrix (if any)
-      [nodeMatrix];
+      [childNodeMatrix];
   },
 
   getPointsFromArray(array) {
     const res = [];
-    for(let i = 0; i< array.length ; i+=3) {
-
+    for (let i = 0; i < array.length ; i+=3) {
         res.push(new Matrix(1,4,false).setData([array[i], array[i+1], array[i+2], 1]));
     }
     return res;
@@ -97,4 +85,4 @@ const gltfBoundingBox = {
 
 };
 
-export default gltfBoundingBox;
+export default gltf2BoundingBox;
