@@ -12,26 +12,24 @@ const gltfReader = {
     const mesh = gltf.meshes[meshName];
     const primitivesCount = mesh.primitives ? mesh.primitives.length : 0;
 
-    if (primitivesCount > 1) {
-      console.error(
-        "gltfReader: Currently unable to load meshes with more than 1 primitive."
-      );
-      return null;
-    } else if (primitivesCount === 0) {
+    if (primitivesCount === 0) {
       console.error("gltfReader: Mesh has no primitive.");
       return null;
     }
 
-    const primitive = mesh.primitives[0];
+    const positions = [];
+    mesh.primitives.forEach((primitive) => {
+      // Attributes
+      if (!primitive.attributes) return;
 
-    // Attributes
-    const attributes = {};
-    if (!primitive.attributes) return [];
-    return gltfReader._loadAccessor(
-      gltf,
-      primitive.attributes.POSITION,
-      buffers
-    );
+      positions.push(...gltfReader._loadAccessor(
+        gltf,
+        primitive.attributes.POSITION,
+        buffers
+      ));
+    })
+
+    return positions;
   },
 
   /**

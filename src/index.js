@@ -9,7 +9,7 @@ const gltfBoundingBox = {
    * @param {Buffer} [buffers={}] External buffers list if any.
    */
   computeBoundings(gltf, buffers={}) {
-    if (gltf instanceof Buffer) {
+    if (Boolean(gltf.readUInt32LE)) {
       const version = gltf.readUInt32LE(4);
       if (version === 2) {
         return glb2BoundingBox.computeBoundings(gltf, buffers);
