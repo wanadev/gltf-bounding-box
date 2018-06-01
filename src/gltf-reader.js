@@ -17,12 +17,12 @@ const gltfReader = {
       return null;
     }
 
-    const positions = [];
+    let positions = [];
     mesh.primitives.forEach((primitive) => {
       // Attributes
       if (!primitive.attributes) return;
 
-      positions.push(...gltfReader._loadAccessor(
+      positions = positions.concat(gltfReader._loadAccessor(
         gltf,
         primitive.attributes.POSITION,
         buffers
