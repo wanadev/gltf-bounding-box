@@ -8,17 +8,17 @@ const gltfBoundingBox = {
    * @param {Object|Buffer} gltf
    * @param {Buffer} [buffers={}] External buffers list if any.
    */
-  computeBoundings(gltf, buffers={}) {
+  computeBoundings(gltf, buffers=[]) {
     if (Boolean(gltf.readUInt32LE)) {
       const version = gltf.readUInt32LE(4);
       if (version === 2) {
-        return glb2BoundingBox.computeBoundings(gltf, buffers);
+        return glb2BoundingBox.computeBoundings(gltf);
       } else {
         throw new Error("gltf-bounding-box only currently handles glTF1 and glTF/glb2.");
       }
     } else {
       if (+gltf.asset.version === 1) {
-        return gltf1BoundingBox.computeBoundings(gltf, buffers);
+        return gltf1BoundingBox.computeBoundings(gltf);
       } else if (+gltf.asset.version === 2) {
         return gltf2BoundingBox.computeBoundings(gltf, buffers);
       } else {
