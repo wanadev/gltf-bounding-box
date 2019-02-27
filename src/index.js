@@ -8,7 +8,7 @@ const gltfBoundingBox = {
    * @param {Object|Buffer} gltf
    * @param {Buffer} [buffers={}] External buffers list if any.
    */
-  computeBoundings(gltf, buffers={},precision=0) {
+  computeBoundings(gltf, buffers={}, precision=0) {
     if (Boolean(gltf.readUInt32LE)) {
       const version = gltf.readUInt32LE(4);
       if (version === 2) {
