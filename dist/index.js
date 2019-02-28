@@ -17363,11 +17363,16 @@ var precise = {
         * @param {Number} number
         * @param {String|Number} precision the precision to round up the number
         * @return {Number} the rounded number
+    * 
+    * If precision is not 0, the number is rounded using ceil to avoid having a bbox smaller than the actual object.
         */
 				round: function round(number, precision) {
+								if (precision === 0) {
+												return Math.round(number);
+								}
 								var factor = Math.pow(10, precision);
 								var tempNumber = number * factor;
-								var roundedTempNumber = Math.round(tempNumber);
+								var roundedTempNumber = Math.ceil(tempNumber);
 								return roundedTempNumber / factor;
 				}
 };
@@ -17576,7 +17581,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var gltf1BoundingBox = {
   computeBoundings: function computeBoundings(gltf) {
-    var precision = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var buffers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var precision = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
     // get all the points and retrieve min max
     var boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf).reduce(function (acc, point) {
@@ -20760,7 +20766,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var glb2BoundingBox = {
   computeBoundings: function computeBoundings(glb) {
-    var precision = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var buffers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var precision = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
     // Extract json chunk
     var jsonChunkLength = glb.readUInt32LE(12);
