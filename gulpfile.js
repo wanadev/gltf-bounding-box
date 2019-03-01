@@ -56,14 +56,10 @@ function build() {
         libraryTarget: 'umd',
         library: config.mainVarName
       },
-      // Add your own externals here. For instance,
-      // {
-      //   jquery: true
-      // }
-      // would externalize the `jquery` module.
+      mode: "production",
       externals: {},
       module: {
-        loaders: [
+        rules: [
           {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
       },
