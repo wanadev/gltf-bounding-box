@@ -6,7 +6,7 @@ import precise from './precise';
 
 const gltf1BoundingBox = {
 
-  computeBoundings(gltf,precision=0) {
+  computeBoundings(gltf, buffers = {}, precision = 0) {
     // get all the points and retrieve min max
     const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf).reduce((acc, point) => {
         acc.min = acc.min.map((elt, i) => elt < point[i] ? elt : point[i]);
@@ -56,7 +56,11 @@ const gltf1BoundingBox = {
 
 
         const transformedPoints = positions.map(point =>  Matrix.multiply(point, matrix));
-        acc.push(...transformedPoints);
+        
+        // Changed from acc.push(...transformedPoints) to avoid encountering a 
+        // `RangeError: Maximum call stack size exceeded` when the arguments would be too many.
+        // See https://github.com/nodejs/node/issues/16870#issuecomment-342720915 for more information
+        transformedPoints.forEach(p => acc.push(p));
 
         return acc;
     }, []);

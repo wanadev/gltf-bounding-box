@@ -48,7 +48,11 @@ const gltf2BoundingBox = {
         const positions = this.getPointsFromArray(loadPositions(gltf, node.mesh, buffers));
 
         const transformedPoints = positions.map(point =>  Matrix.multiply(point, matrix));
-        acc.push(...transformedPoints);
+
+        // Changed from acc.push(...transformedPoints) to avoid encountering a 
+        // `RangeError: Maximum call stack size exceeded` when the arguments would be too many.
+        // See https://github.com/nodejs/node/issues/16870#issuecomment-342720915 for more information
+        transformedPoints.forEach(p => acc.push(p));
 
         return acc;
     }, []);
