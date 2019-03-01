@@ -17461,7 +17461,13 @@ var gltf2BoundingBox = {
       var transformedPoints = positions.map(function (point) {
         return _matrixmath.Matrix.multiply(point, matrix);
       });
-      acc.push.apply(acc, _toConsumableArray(transformedPoints));
+
+      // Changed from acc.push(...transformedPoints) to avoid encountering a 
+      // `RangeError: Maximum call stack size exceeded` when the arguments would be too many.
+      // See https://github.com/nodejs/node/issues/16870#issuecomment-342720915 for more information
+      transformedPoints.forEach(function (p) {
+        return acc.push(p);
+      });
 
       return acc;
     }, []);
@@ -17643,7 +17649,13 @@ var gltf1BoundingBox = {
       var transformedPoints = positions.map(function (point) {
         return _matrixmath.Matrix.multiply(point, matrix);
       });
-      acc.push.apply(acc, _toConsumableArray(transformedPoints));
+
+      // Changed from acc.push(...transformedPoints) to avoid encountering a 
+      // `RangeError: Maximum call stack size exceeded` when the arguments would be too many.
+      // See https://github.com/nodejs/node/issues/16870#issuecomment-342720915 for more information
+      transformedPoints.forEach(function (p) {
+        return acc.push(p);
+      });
 
       return acc;
     }, []);
