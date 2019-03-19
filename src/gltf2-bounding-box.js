@@ -6,7 +6,7 @@ import precise from './precise';
 
 const gltf2BoundingBox = {
 
-  computeBoundings(gltf, buffers=[], precision=0) {
+  computeBoundings(gltf, { buffers=[], precision } = {}) {
     const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf, buffers).reduce((acc, point) => {
         acc.min = acc.min.map((elt, i) => elt < point[i] ? elt : point[i]);
         acc.max = acc.max.map((elt, i) => elt > point[i] ? elt : point[i]);
