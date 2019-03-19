@@ -2,9 +2,11 @@ import { Matrix } from 'matrixmath';
 import { flattenDeep, includes } from 'lodash';
 import { loadPositions } from './gltf-reader';
 
+import precise from './precise';
+
 const gltf2BoundingBox = {
 
-  computeBoundings(gltf, buffers=[]) {
+  computeBoundings(gltf, buffers=[], { precision } = {}) {
     const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf, buffers).reduce((acc, point) => {
         acc.min = acc.min.map((elt, i) => elt < point[i] ? elt : point[i]);
         acc.max = acc.max.map((elt, i) => elt > point[i] ? elt : point[i]);
@@ -14,14 +16,14 @@ const gltf2BoundingBox = {
     // Return the dimensions of the bounding box
     const res =  {
       dimensions: {
-        width: Math.round(boundings.max[0] - boundings.min[0]),
-        depth: Math.round(boundings.max[2] - boundings.min[2]),
-        height: Math.round(boundings.max[1] - boundings.min[1]),
+        width: precise.round(boundings.max[0] - boundings.min[0], precision),
+        depth: precise.round(boundings.max[2] - boundings.min[2], precision),
+        height: precise.round(boundings.max[1] - boundings.min[1], precision),
       },
       center: {
-        x: Math.round((boundings.max[0] + boundings.min[0]) / 2),
-        y: Math.round((boundings.max[2] + boundings.min[2]) / 2),
-        z: Math.round((boundings.max[1] + boundings.min[1]) / 2),
+        x: precise.round((boundings.max[0] + boundings.min[0]), precision) / 2,
+        y: precise.round((boundings.max[2] + boundings.min[2]), precision) / 2,
+        z: precise.round((boundings.max[1] + boundings.min[1]), precision) / 2,
       },
     };
 
@@ -46,9 +48,7 @@ const gltf2BoundingBox = {
         const positions = this.getPointsFromArray(loadPositions(gltf, node.mesh, buffers));
 
         const transformedPoints = positions.map(point =>  Matrix.multiply(point, matrix));
-        acc.push(...transformedPoints);
-
-        return acc;
+        return acc.concat(transformedPoints);
     }, []);
   },
 
