@@ -16,9 +16,9 @@ const gltf2BoundingBox = {
     // Return the dimensions of the bounding box
     const res =  {
       dimensions: {
-        width: precise.round(boundings.max[0] - boundings.min[0],precision),
-        depth: precise.round(boundings.max[2] - boundings.min[2],precision),
-        height: precise.round(boundings.max[1] - boundings.min[1],precision),
+        width: precise.round(boundings.max[0] - boundings.min[0], precision),
+        depth: precise.round(boundings.max[2] - boundings.min[2], precision),
+        height: precise.round(boundings.max[1] - boundings.min[1], precision),
       },
       center: {
         x: precise.round((boundings.max[0] + boundings.min[0]), precision) / 2,
