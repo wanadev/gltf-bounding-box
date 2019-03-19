@@ -22,9 +22,9 @@ const gltf1BoundingBox = {
         height: precise.round(boundings.max[1] - boundings.min[1], precision),
       },
       center: {
-        x: precise.round((boundings.max[0] + boundings.min[0]) / 2, precision),
-        y: precise.round((boundings.max[2] + boundings.min[2]) / 2, precision),
-        z: precise.round((boundings.max[1] + boundings.min[1]) / 2, precision),
+        x: precise.round((boundings.max[0] + boundings.min[0]) / 2, precision + 1),
+        y: precise.round((boundings.max[2] + boundings.min[2]) / 2, precision + 1),
+        z: precise.round((boundings.max[1] + boundings.min[1]) / 2, precision + 1),
       },
     };
 
