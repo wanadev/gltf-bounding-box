@@ -13,7 +13,7 @@ const glb2BoundingBox = {
     const binChunkLength = glb.readUInt32LE(binChunkOffset);
     const binChunkData = glb.slice(binChunkOffset + 8, binChunkOffset + 8 + binChunkLength);
 
-    return gltf2BoundingBox.computeBoundings(gltf, {buffers: [binChunkData], precision});
+    return gltf2BoundingBox.computeBoundings(gltf, [binChunkData], { precision });
   },
 
 };
