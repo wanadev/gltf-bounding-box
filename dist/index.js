@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -85,7 +85,7 @@ return /******/ (function(modules) { // webpackBootstrap
  */
 
 
-exports.Matrix = __webpack_require__(8);
+exports.Matrix = __webpack_require__(7);
 
 
 /***/ }),
@@ -17191,7 +17191,7 @@ exports.Matrix = __webpack_require__(8);
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(9)(module)))
 
 /***/ }),
 /* 2 */
@@ -17344,44 +17344,10 @@ var gltfReader = {
 
 exports.default = gltfReader;
 module.exports = exports["default"];
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).Buffer))
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-				value: true
-});
-var precise = {
-
-				/**
-        * @public
-        * @param {Number} number
-        * @param {String|Number} precision the precision to round up the number
-        * @return {Number} the rounded number
-    * 
-    * If precision is not 0, the number is rounded using ceil to avoid having a bbox smaller than the actual object.
-        */
-				round: function round(number, precision) {
-								if (precision === 0) {
-												return Math.round(number);
-								}
-								var factor = Math.pow(10, precision);
-								var tempNumber = number * factor;
-								var roundedTempNumber = Math.ceil(tempNumber);
-								return roundedTempNumber / factor;
-				}
-};
-
-exports.default = precise;
-module.exports = exports["default"];
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17397,18 +17363,11 @@ var _lodash = __webpack_require__(1);
 
 var _gltfReader = __webpack_require__(3);
 
-var _precise = __webpack_require__(4);
-
-var _precise2 = _interopRequireDefault(_precise);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var gltf2BoundingBox = {
   computeBoundings: function computeBoundings(gltf) {
     var buffers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-    var precision = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
     var boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf, buffers).reduce(function (acc, point) {
       acc.min = acc.min.map(function (elt, i) {
@@ -17423,14 +17382,14 @@ var gltf2BoundingBox = {
     // Return the dimensions of the bounding box
     var res = {
       dimensions: {
-        width: _precise2.default.round(boundings.max[0] - boundings.min[0], precision),
-        depth: _precise2.default.round(boundings.max[2] - boundings.min[2], precision),
-        height: _precise2.default.round(boundings.max[1] - boundings.min[1], precision)
+        width: Math.round(boundings.max[0] - boundings.min[0]),
+        depth: Math.round(boundings.max[2] - boundings.min[2]),
+        height: Math.round(boundings.max[1] - boundings.min[1])
       },
       center: {
-        x: _precise2.default.round((boundings.max[0] + boundings.min[0]) / 2, precision),
-        y: _precise2.default.round((boundings.max[2] + boundings.min[2]) / 2, precision),
-        z: _precise2.default.round((boundings.max[1] + boundings.min[1]) / 2, precision)
+        x: Math.round((boundings.max[0] + boundings.min[0]) / 2),
+        y: Math.round((boundings.max[2] + boundings.min[2]) / 2),
+        z: Math.round((boundings.max[1] + boundings.min[1]) / 2)
       }
     };
 
@@ -17461,13 +17420,7 @@ var gltf2BoundingBox = {
       var transformedPoints = positions.map(function (point) {
         return _matrixmath.Matrix.multiply(point, matrix);
       });
-
-      // Changed from acc.push(...transformedPoints) to avoid encountering a 
-      // `RangeError: Maximum call stack size exceeded` when the arguments would be too many.
-      // See https://github.com/nodejs/node/issues/16870#issuecomment-342720915 for more information
-      transformedPoints.forEach(function (p) {
-        return acc.push(p);
-      });
+      acc.push.apply(acc, _toConsumableArray(transformedPoints));
 
       return acc;
     }, []);
@@ -17504,7 +17457,7 @@ exports.default = gltf2BoundingBox;
 module.exports = exports['default'];
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17514,15 +17467,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _gltf1BoundingBox = __webpack_require__(7);
+var _gltf1BoundingBox = __webpack_require__(6);
 
 var _gltf1BoundingBox2 = _interopRequireDefault(_gltf1BoundingBox);
 
-var _gltf2BoundingBox = __webpack_require__(5);
+var _gltf2BoundingBox = __webpack_require__(4);
 
 var _gltf2BoundingBox2 = _interopRequireDefault(_gltf2BoundingBox);
 
-var _glb2BoundingBox = __webpack_require__(15);
+var _glb2BoundingBox = __webpack_require__(14);
 
 var _glb2BoundingBox2 = _interopRequireDefault(_glb2BoundingBox);
 
@@ -17536,20 +17489,19 @@ var gltfBoundingBox = {
    */
   computeBoundings: function computeBoundings(gltf) {
     var buffers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var precision = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
     if (Boolean(gltf.readUInt32LE)) {
       var version = gltf.readUInt32LE(4);
       if (version === 2) {
-        return _glb2BoundingBox2.default.computeBoundings(gltf, buffers, precision);
+        return _glb2BoundingBox2.default.computeBoundings(gltf, buffers);
       } else {
         throw new Error("gltf-bounding-box only currently handles glTF1 and glTF/glb2.");
       }
     } else {
       if (+gltf.asset.version === 1) {
-        return _gltf1BoundingBox2.default.computeBoundings(gltf, buffers, precision);
+        return _gltf1BoundingBox2.default.computeBoundings(gltf, buffers);
       } else if (+gltf.asset.version === 2) {
-        return _gltf2BoundingBox2.default.computeBoundings(gltf, buffers, precision);
+        return _gltf2BoundingBox2.default.computeBoundings(gltf, buffers);
       } else {
         throw new Error("gltf-bounding-box only currently handles glTF1 and glTF/glb2.");
       }
@@ -17561,7 +17513,7 @@ exports.default = gltfBoundingBox;
 module.exports = exports['default'];
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17577,19 +17529,10 @@ var _lodash = __webpack_require__(1);
 
 var _gltfReader = __webpack_require__(3);
 
-var _precise = __webpack_require__(4);
-
-var _precise2 = _interopRequireDefault(_precise);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var gltf1BoundingBox = {
   computeBoundings: function computeBoundings(gltf) {
-    var buffers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var precision = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
     // get all the points and retrieve min max
     var boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf).reduce(function (acc, point) {
       acc.min = acc.min.map(function (elt, i) {
@@ -17604,14 +17547,14 @@ var gltf1BoundingBox = {
     // Return the dimensions of the bounding box
     var res = {
       dimensions: {
-        width: _precise2.default.round(boundings.max[0] - boundings.min[0], precision),
-        depth: _precise2.default.round(boundings.max[2] - boundings.min[2], precision),
-        height: _precise2.default.round(boundings.max[1] - boundings.min[1], precision)
+        width: Math.round(boundings.max[0] - boundings.min[0]),
+        depth: Math.round(boundings.max[2] - boundings.min[2]),
+        height: Math.round(boundings.max[1] - boundings.min[1])
       },
       center: {
-        x: _precise2.default.round((boundings.max[0] + boundings.min[0]) / 2, precision),
-        y: _precise2.default.round((boundings.max[2] + boundings.min[2]) / 2, precision),
-        z: _precise2.default.round((boundings.max[1] + boundings.min[1]) / 2, precision)
+        x: Math.round((boundings.max[0] + boundings.min[0]) / 2),
+        y: Math.round((boundings.max[2] + boundings.min[2]) / 2),
+        z: Math.round((boundings.max[1] + boundings.min[1]) / 2)
       }
     };
 
@@ -17649,13 +17592,7 @@ var gltf1BoundingBox = {
       var transformedPoints = positions.map(function (point) {
         return _matrixmath.Matrix.multiply(point, matrix);
       });
-
-      // Changed from acc.push(...transformedPoints) to avoid encountering a 
-      // `RangeError: Maximum call stack size exceeded` when the arguments would be too many.
-      // See https://github.com/nodejs/node/issues/16870#issuecomment-342720915 for more information
-      transformedPoints.forEach(function (p) {
-        return acc.push(p);
-      });
+      acc.push.apply(acc, _toConsumableArray(transformedPoints));
 
       return acc;
     }, []);
@@ -17693,7 +17630,7 @@ exports.default = gltf1BoundingBox;
 module.exports = exports['default'];
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17702,7 +17639,7 @@ module.exports = exports['default'];
  */
 
 
-var arrays = __webpack_require__(9);
+var arrays = __webpack_require__(8);
 
 /**
  * @classdesc A class for representing and working with a mathematical matrix.
@@ -18584,7 +18521,7 @@ module.exports = Matrix;
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18713,7 +18650,7 @@ exports.giveBack = giveBack;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -18741,7 +18678,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18755,9 +18692,9 @@ module.exports = function(module) {
 
 
 
-var base64 = __webpack_require__(12)
-var ieee754 = __webpack_require__(13)
-var isArray = __webpack_require__(14)
+var base64 = __webpack_require__(11)
+var ieee754 = __webpack_require__(12)
+var isArray = __webpack_require__(13)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -20538,7 +20475,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20659,7 +20596,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -20749,7 +20686,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -20760,7 +20697,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20770,7 +20707,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _gltf2BoundingBox = __webpack_require__(5);
+var _gltf2BoundingBox = __webpack_require__(4);
 
 var _gltf2BoundingBox2 = _interopRequireDefault(_gltf2BoundingBox);
 
@@ -20778,9 +20715,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var glb2BoundingBox = {
   computeBoundings: function computeBoundings(glb) {
-    var buffers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var precision = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
     // Extract json chunk
     var jsonChunkLength = glb.readUInt32LE(12);
     var jsonChunkData = glb.slice(20, 20 + jsonChunkLength);
@@ -20791,7 +20725,7 @@ var glb2BoundingBox = {
     var binChunkLength = glb.readUInt32LE(binChunkOffset);
     var binChunkData = glb.slice(binChunkOffset + 8, binChunkOffset + 8 + binChunkLength);
 
-    return _gltf2BoundingBox2.default.computeBoundings(gltf, [binChunkData], precision);
+    return _gltf2BoundingBox2.default.computeBoundings(gltf, [binChunkData]);
   }
 };
 
