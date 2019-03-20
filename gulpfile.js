@@ -54,7 +54,8 @@ function build() {
       output: {
         filename: `${exportFileName}.js`,
         libraryTarget: 'umd',
-        library: config.mainVarName
+        library: config.mainVarName,
+        globalObject: 'this'
       },
       mode: "production",
       externals: {},
