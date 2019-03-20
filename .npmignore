@@ -1,0 +1,6 @@
+test/
+.babelrc
+.editorconfig
+.eslintrc
+.travis.yml
+gulpfile.js
