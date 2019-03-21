@@ -9,9 +9,13 @@ const gltfBoundingBox = {
    * @param {Buffer} buffers External buffers list if any.
    * @param {Object} options
    * @param {number} options.precision boundings precision, number of decimals.
+   * @param {boolean} options.ceilDimensions ceil bounding box dimensions to prevent it of being smaller than the actual object.
    */
   computeBoundings(gltf, buffers = [], options) {
-    options = Object.assign({ precision: 0 }, options)
+    options = Object.assign({ 
+      precision: 0,
+      ceilDimensions: false,
+    }, options)
     if (Boolean(gltf.readUInt32LE)) {
       const version = gltf.readUInt32LE(4);
       if (version === 2) {

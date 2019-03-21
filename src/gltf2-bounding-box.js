@@ -6,7 +6,7 @@ import precise from './precise';
 
 const gltf2BoundingBox = {
 
-  computeBoundings(gltf, buffers=[], { precision } = {}) {
+  computeBoundings(gltf, buffers=[], { precision, ceilDimensions } = {}) {
     const boundings = this.getMeshesTransformMatrices(gltf.nodes, gltf, buffers).reduce((acc, point) => {
         acc.min = acc.min.map((elt, i) => elt < point[i] ? elt : point[i]);
         acc.max = acc.max.map((elt, i) => elt > point[i] ? elt : point[i]);
@@ -14,16 +14,17 @@ const gltf2BoundingBox = {
     },{min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity]});
 
     // Return the dimensions of the bounding box
+    const dimensionRound = ceilDimensions ? precise.ceil : precise.round;
     const res =  {
       dimensions: {
-        width: precise.round(boundings.max[0] - boundings.min[0], precision),
-        depth: precise.round(boundings.max[2] - boundings.min[2], precision),
-        height: precise.round(boundings.max[1] - boundings.min[1], precision),
+        width: dimensionRound(boundings.max[0] - boundings.min[0], precision),
+        depth: dimensionRound(boundings.max[2] - boundings.min[2], precision),
+        height: dimensionRound(boundings.max[1] - boundings.min[1], precision),
       },
       center: {
-        x: precise.round((boundings.max[0] + boundings.min[0]), precision) / 2,
-        y: precise.round((boundings.max[2] + boundings.min[2]), precision) / 2,
-        z: precise.round((boundings.max[1] + boundings.min[1]), precision) / 2,
+        x: precise.round((boundings.max[0] + boundings.min[0]) / 2, precision + 1),
+        y: precise.round((boundings.max[2] + boundings.min[2]) / 2, precision + 1),
+        z: precise.round((boundings.max[1] + boundings.min[1]) / 2, precision + 1),
       },
     };
 
