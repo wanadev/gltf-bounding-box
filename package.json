@@ -1,6 +1,6 @@
 {
   "name": "gltf-bounding-box",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Computes the global bounding box of a gltf model",
   "main": "dist/index.js",
   "scripts": {
