@@ -18,8 +18,8 @@ const trsMatrix = {
         // Post-multiply: T * R * S
         const TRS = t.multiply(r).multiply(s);
 
-        // toArray returns a column-major, so if we transpose we get the row-major that we need
-        return TRS.transpose().toArray()
+        // toArray returns a column-major, and we need exactly that one
+        return TRS.toArray();
     },
 
     /**
