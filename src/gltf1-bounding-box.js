@@ -3,6 +3,7 @@ import { flattenDeep, includes } from 'lodash';
 import { loadPositions } from './gltf-reader';
 
 import precise from './precise';
+import trsMatrix from './trs-matrix';
 
 const gltf1BoundingBox = {
 
@@ -70,8 +71,8 @@ const gltf1BoundingBox = {
         includes(nodes[nodeName].children, childNodeName)
       );
 
-    // Specify identity matrix if not present
-    const nodeMatrix = nodes[childNodeName].matrix || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    // Get matrix or compose TRS fields if present, TRS is by default Identity
+    const nodeMatrix = nodes[childNodeName].matrix || trsMatrix.getTRSMatrix(nodes[childNodeName]);;
 
     return parentNodeName ?
 

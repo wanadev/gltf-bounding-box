@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.5",
-    "matrixmath": "^2.2.2"
+    "matrixmath": "^2.2.2",
+    "three": "^0.103.0"
   }
 }
