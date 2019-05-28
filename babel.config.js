@@ -1,8 +1,8 @@
 module.exports = {
-    presets: [
-        ["@babel/env", {}],
-    ],
+  presets: [
+    ["@babel/env", { "modules": "commonjs" }],
+  ],
   plugins: [
-    "add-module-exports",
+    "babel-plugin-add-module-exports",
   ]
 };
